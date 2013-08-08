@@ -105,7 +105,8 @@ module PrettyText
     @ctx.eval("var window = {}; window.devicePixelRatio = 2;") # hack to make code think stuff is retina
     @ctx.eval("var I18n = {}; I18n.t = function(a,b){ return helpers.t(a,b); }");
 
-    ctx_load( "app/assets/javascripts/discourse/components/bbcode.js",
+    ctx_load( "app/assets/javascripts/external/markdown.js",
+              "app/assets/javascripts/discourse/components/bbcode.js",
               "app/assets/javascripts/discourse/components/utilities.js",
               "app/assets/javascripts/discourse/components/markdown.js")
 

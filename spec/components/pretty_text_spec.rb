@@ -43,20 +43,6 @@ a @test
       PrettyText.cook("<script>alert(42)</script>").should match_html "alert(42)"
     end
 
-    it "should escape html within the code block" do
-
-      PrettyText.cook("```text
-<header>hello</header>
-```").should match_html "<pre><code class=\"text\">&lt;header&gt;hello&lt;/header&gt;  \n</code></pre>"
-    end
-
-    it "should support language choices" do
-
-      PrettyText.cook("```ruby
-test
-```").should match_html "<pre><code class=\"ruby\">test  \n</code></pre>"
-    end
-
     it 'should decorate @mentions' do
       PrettyText.cook("Hello @eviltrout").should match_html "<p>Hello <span class=\"mention\">@eviltrout</span></p>"
     end

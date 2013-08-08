@@ -21,7 +21,7 @@ test("basic cooking", function() {
 test("Line Breaks", function() {
 
   var input = "1\n2\n3";
-  cooked(input, "<p>1 <br>\n2 <br>\n3</p>", "automatically handles trivial newlines");
+  cooked(input, "<p>1<br/>2<br/>3</p>", "automatically handles trivial newlines");
 
   var traditionalOutput = "<p>1\n2\n3</p>";
 
@@ -68,14 +68,13 @@ test("Links", function() {
 test("Quotes", function() {
   cookedOptions("1[quote=\"bob, post:1\"]my quote[/quote]2",
                 { topicId: 2, lookupAvatar: function(name) { return "" + name; } },
-                "<p>1</p><aside class='quote' data-post=\"1\" >\n  <div class='title'>\n    <div class='quote-controls'></div>\n" +
-                "  bob\n  bob said:\n  </div>\n  <blockquote>my quote</blockquote>\n</aside>\n<p></p>\n\n<p>2</p>",
+                "<p>1<aside class=\"quote\"><div class=\"title\"><div class=\"quote-controls\"></div>bob\n" +
+                "bob said:</div><blockquote>my quote</blockquote></aside><br/>2</p>",
                 "handles quotes properly");
 
   cookedOptions("1[quote=\"bob, post:1\"]my quote[/quote]2",
                 { topicId: 2, lookupAvatar: function(name) { } },
-                "<p>1</p><aside class='quote' data-post=\"1\" >\n  <div class='title'>\n    <div class='quote-controls'></div>\n" +
-                "  \n  bob said:\n  </div>\n  <blockquote>my quote</blockquote>\n</aside>\n<p></p>\n\n<p>2</p>",
+                "<p>1<aside class=\"quote\"><div class=\"title\"><div class=\"quote-controls\"></div>bob said:</div><blockquote>my quote</blockquote></aside><br/>2</p>",
                 "includes no avatar if none is found");
 });
 
@@ -101,7 +100,8 @@ test("Oneboxing", function() {
   };
 
   ok(!matches("- http://www.textfiles.com/bbs/MINDVOX/FORUMS/ethics\n\n- http://drupal.org", /onebox/),
-     "doesn't onebox a link within a list");
+              "doesn't onebox a link within a list");
+
   ok(matches("http://test.com", /onebox/), "adds a onebox class to a link on its own line");
   ok(matches("http://test.com\nhttp://test2.com", /onebox[\s\S]+onebox/m), "supports multiple links");
   ok(!matches("http://test.com bob", /onebox/), "doesn't onebox links that have trailing text");
@@ -111,6 +111,16 @@ test("Oneboxing", function() {
          ">http://en.wikipedia.org/wiki/Homicide:_Life_on_the_Street</a></p>",
          "works with links that have underscores in them");
 
+});
+
+test("code", function() {
+  cooked("```text\n<header>hello</header>\n```",
+         "<p><pre><code class=\"text\">\n&lt;header&gt;hello&lt;/header&gt;  \n</code></pre></p>",
+         "it escapes code in the code block");
+
+  cooked("```ruby\n# cool\n```",
+         "<p><pre><code class=\"ruby\">\n# cool\n</code></pre></p>",
+         "it supports changing the language");
 });
 
 test("SanitizeHTML", function() {
@@ -123,7 +133,7 @@ test("SanitizeHTML", function() {
 test("URLs in BBCode tags", function() {
 
   cooked("[img]http://eviltrout.com/eviltrout.png[/img][img]http://samsaffron.com/samsaffron.png[/img]",
-         "<p><img src=\"http://eviltrout.com/eviltrout.png\"><img src=\"http://samsaffron.com/samsaffron.png\"></p>",
+         "<p><img src=\"http://eviltrout.com/eviltrout.png\"/><img src=\"http://samsaffron.com/samsaffron.png\"/></p>",
          "images are properly parsed");
 
   cooked("[url]http://discourse.org[/url]",
