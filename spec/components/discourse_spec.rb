@@ -41,7 +41,7 @@ describe Discourse do
         SiteSetting.stubs(:port).returns(3000)
       end
 
-      it "returns the non standart port in the base url" do
+      it "returns the non standard port in the base url" do
         Discourse.base_url.should == "http://foo.com:3000"
       end
     end
